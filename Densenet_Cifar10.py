@@ -18,7 +18,7 @@ nb_block = 2 # how many (dense block + Transition Layer) ?
 init_learning_rate = 1e-4
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.2
-num_classes = 20
+num_classes = 251
 
 # Momentum Optimizer will use
 nesterov_momentum = 0.9
