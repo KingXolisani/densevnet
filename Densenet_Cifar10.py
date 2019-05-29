@@ -18,7 +18,7 @@ nb_block = 2 # how many (dense block + Transition Layer) ?
 init_learning_rate = 1e-4
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.2
-num_classes = 22
+num_classes = 20
 
 # Momentum Optimizer will use
 nesterov_momentum = 0.9
@@ -136,7 +136,7 @@ def xentropy_loss(logits, labels, num_classes):
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
 
-    return loss  
+    return loss
 
 def calculate_iou(mask, prediction, num_classes):
     """
@@ -189,22 +189,22 @@ class DenseNet():
             x = Batch_Normalization(x, training=self.training, scope=scope+'_batch1')
             x = Relu(x)
             # x = conv_layer(x, filter=self.filters, kernel=[1,1], layer_name=scope+'_conv1')
-            
+
             # https://github.com/taki0112/Densenet-Tensorflow/issues/10
-            
+
             in_channel = x.shape[-1]
             x = conv_layer(x, filters=24, kernel=kernel, layer_name=scope+'_conv1')
             x = Drop_out(x, rate=dropout_rate, training=self.training)
             x = Average_pooling(x, pool_size=[2,2], stride=2)
 
             return x
-    
+
     def upsample_layer(self, bottom,n_channels, name, upscale_factor):
-     
+
         kernel_size = 2*upscale_factor - upscale_factor%2
         stride = upscale_factor
         strides = [1, stride, stride, 1]
-        
+
         def get_bilinear_filter(filter_shape, upscale_factor):
             #value = (1 - abs((x - centre_location)/ upscale_factor)) * (1 - abs((y - centre_location)/ upscale_factor))
             bilinear = np.zeros([filter_shape[0],filter_shape[1]])
@@ -212,32 +212,32 @@ class DenseNet():
 
             for i in range(filter_shape[2]):
                 weights[:, :, i, i] = bilinear
-            
+
             init = tf.constant_initializer(value=weights,dtype=tf.float32)
-    
+
             bilinear_weights = tf.get_variable(name="decon_bilinear_filter", initializer=init, shape=weights.shape)
             return bilinear_weights
-        
+
         with tf.variable_scope(name):
             # Shape of the bottom tensor
             in_shape = tf.shape(bottom)
- 
+
             h = in_shape[1] * upscale_factor
             w = in_shape[2] * upscale_factor
 
             new_shape = [in_shape[0], h, w, n_channels]
             output_shape = tf.stack(new_shape)
- 
+
             filter_shape = [kernel_size, kernel_size, n_channels, n_channels]
- 
+
             weights = get_bilinear_filter(filter_shape,upscale_factor)
             deconv = tf.nn.conv2d_transpose(bottom, weights, output_shape,
                                             strides=strides, padding='SAME')
- 
-        return deconv       
+
+        return deconv
 
 
-    
+
 
     def dense_block(self, input_x, filters, nb_layers, layer_name):
         with tf.name_scope(layer_name):
@@ -257,29 +257,29 @@ class DenseNet():
 
             return x
 
-    def Dense_net(self, input_x):	
+    def Dense_net(self, input_x):
        #Conv0 = conv_layer(input_x, filter= 2*self.filters, kernel=[5,5], stride=2,layer_name='Conv_Down0')
-       
+
        Conv_Down0 = self.transition_layer(input_x, [5,5], scope='Conv_Down0')
-       
+
        Dense1 = self.dense_block(input_x=Conv_Down0, filters=4, nb_layers=5, layer_name='dense_1')
        Conv_Down1 = self.transition_layer(Dense1, [3,3], scope='Conv_Down1')
-       
+
        Dense2 = self.dense_block(input_x=Conv_Down1, filters=8, nb_layers=10, layer_name='dense_2')
        Conv_Down2 = self.transition_layer(Dense2, [3,3], scope='Conv_Down2')
-       
-       Dense3 = self.dense_block(input_x=Conv_Down2, filters=16, nb_layers=10, layer_name='dense_3')
-       
-       Conv1 = conv_layer(Dense3, filters= 24, kernel=[3,3], stride=1,layer_name='Conv1')
-       upx4 = self.upsample_layer(Conv1, Conv1.get_shape()[-1], 'upx4', 4) 
-    
-       Conv2 = conv_layer(Dense2, filters= 24, kernel=[3,3], stride=1,layer_name='Conv2')
-       upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 2) 
- 
-       Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
-       
 
-              
+       Dense3 = self.dense_block(input_x=Conv_Down2, filters=16, nb_layers=10, layer_name='dense_3')
+
+       Conv1 = conv_layer(Dense3, filters= 24, kernel=[3,3], stride=1,layer_name='Conv1')
+       upx4 = self.upsample_layer(Conv1, Conv1.get_shape()[-1], 'upx4', 4)
+
+       Conv2 = conv_layer(Dense2, filters= 24, kernel=[3,3], stride=1,layer_name='Conv2')
+       upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 2)
+
+       Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
+
+
+
        Merge1 = Concatenation([Conv3,upx2,upx4])
 
        Conv4 = conv_layer(Merge1, filters = num_classes , kernel=[3,3], stride = 1, layer_name = 'Conv4')
@@ -384,7 +384,7 @@ with tf.Session() as sess:
             if pre_index+batch_size < 1464:
                 batch_x = x_train[pre_index: pre_index+batch_size]
                 batch_y = y_train[pre_index: pre_index+batch_size]
-            else:    
+            else:
                 batch_x = x_train[pre_index: ]
                 batch_y = y_train[pre_index: ]
 
