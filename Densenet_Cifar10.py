@@ -367,6 +367,7 @@ with tf.Session() as sess:
     ckpt = tf.train.get_checkpoint_state('./model')
     if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
         saver.restore(sess, ckpt.model_checkpoint_path)
+        sess.run(tf.local_variables_initializer())
     else:
         sess.run(tf.global_variables_initializer())
         sess.run(tf.local_variables_initializer())
