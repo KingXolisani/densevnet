@@ -342,7 +342,10 @@ learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
 
 logits = DenseNet(x=image_ph, nb_blocks=nb_block, filters=growth_k, training=training).model
-loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
+#loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
+# tensorflow api
+loss = tf.losses.sigmoid_cross_entropy(multi_class_labels=mask_ph,
+                                       logits=logits)
 
 with tf.variable_scope("mean_iou_train"):
     iou, iou_update = calculate_iou(mask_ph, logits, num_classes)
@@ -404,6 +407,9 @@ with tf.Session() as sess:
 
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
+
+            loss_ = loss.eval()
+            print(loss_)
 
             train_loss += cost
             train_acc += train_iou
