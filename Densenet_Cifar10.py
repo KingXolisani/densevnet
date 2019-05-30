@@ -283,7 +283,7 @@ class DenseNet():
        Merge1 = Concatenation([Conv3,upx2,upx4])
 
        Conv4 = conv_layer(Merge1, filters = num_classes , kernel=[3,3], stride = 1, layer_name = 'Conv4')
-
+       output = self.upsample_layer(Conv4, num_classes, 'output', 2)
        '''
        x = Batch_Normalization(Merge1, training=self.training, scope='linear_batch')
        x = Relu(x)
@@ -293,7 +293,7 @@ class DenseNet():
         '''
 
         # x = tf.reshape(x, [-1, 10])
-       return Conv4
+       return output
 
 
 '''
@@ -336,7 +336,7 @@ saver = tf.train.Saver(tf.global_variables())
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
-mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
+mask_ph = tf.placeholder(tf.int32, shape=[None, 144, 144, 3])
 training = tf.placeholder(tf.bool, shape=[])
 learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
@@ -380,17 +380,14 @@ with tf.Session() as sess:
         train_loss = 0.0
         y_train1 = []
 
-        for img in y_train:
-            img = tf.image.resize_images(img, (72, 72))
-            y_train1.append(img)
 
         for step in range(1, iteration + 1):
             if pre_index+batch_size < 1464:
                 batch_x = x_train[pre_index: pre_index+batch_size]
-                batch_y = y_train1[pre_index: pre_index+batch_size]
+                batch_y = y_train[pre_index: pre_index+batch_size]
             else:
                 batch_x = x_train[pre_index: ]
-                batch_y = y_train1[pre_index: ]
+                batch_y = y_train[pre_index: ]
 
             #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
 
