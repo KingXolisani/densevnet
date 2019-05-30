@@ -282,7 +282,7 @@ class DenseNet():
 
        Merge1 = Concatenation([Conv3,upx2,upx4])
 
-       Conv4 = conv_layer(Merge1, filters = 24 , kernel=[3,3], stride = 1, layer_name = 'Conv4')
+       Conv4 = conv_layer(Merge1, filters = 60 , kernel=[3,3], stride = 1, layer_name = 'Conv4')
        output = self.upsample_layer(Conv4, 3*num_classes, 'output', 2)
        '''
        x = Batch_Normalization(Merge1, training=self.training, scope='linear_batch')
