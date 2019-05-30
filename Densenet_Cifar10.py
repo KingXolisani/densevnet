@@ -148,7 +148,7 @@ def calculate_iou(mask, prediction, num_classes):
         iou: Tensor, average iou over the batch.
         update_op: Tensor op, update operation for the iou metric.
     """
-    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth=num_classes), [
+    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [
             tf.shape(mask)[0], -1, num_classes])
     prediction = tf.reshape(
             prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
@@ -282,7 +282,7 @@ class DenseNet():
 
        Merge1 = Concatenation([Conv3,upx2,upx4])
 
-       Conv4 = conv_layer(Merge1, filters = 60 , kernel=[3,3], stride = 1, layer_name = 'Conv4')
+       Conv4 = conv_layer(Merge1, filters = 3*num_classes , kernel=[3,3], stride = 1, layer_name = 'Conv4')
        output = self.upsample_layer(Conv4, 3*num_classes, 'output', 2)
        '''
        x = Batch_Normalization(Merge1, training=self.training, scope='linear_batch')
@@ -367,6 +367,8 @@ with tf.Session() as sess:
         saver.restore(sess, ckpt.model_checkpoint_path)
     else:
         sess.run(tf.global_variables_initializer())
+        sess.run(tf.local_variables_initializer())
+
 
     summary_writer = tf.summary.FileWriter('./logs', sess.graph)
 
