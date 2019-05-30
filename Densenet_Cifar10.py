@@ -335,8 +335,6 @@ saver = tf.train.Saver(tf.global_variables())
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
-y_train = tf.image.resize_images(y_train, (72, 72))
-
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
 mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
 training = tf.placeholder(tf.bool, shape=[])
@@ -380,15 +378,19 @@ with tf.Session() as sess:
         pre_index = 0
         train_acc = 0.0
         train_loss = 0.0
+        y_train1 = []
 
+        for img in y_train:
+            img = tf.image.resize_images(img, (72, 72))
+            y_train1.append(img)
 
         for step in range(1, iteration + 1):
             if pre_index+batch_size < 1464:
                 batch_x = x_train[pre_index: pre_index+batch_size]
-                batch_y = y_train[pre_index: pre_index+batch_size]
+                batch_y = y_train1[pre_index: pre_index+batch_size]
             else:
                 batch_x = x_train[pre_index: ]
-                batch_y = y_train[pre_index: ]
+                batch_y = y_train1[pre_index: ]
 
             #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
 
