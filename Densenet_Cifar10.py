@@ -344,7 +344,7 @@ learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 logits = DenseNet(x=image_ph, nb_blocks=nb_block, filters=growth_k, training=training).model
 #loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
 # tensorflow api
-loss = tf.nn.sparse_softmax_cross_entropy_with_logits(multi_class_labels=mask_ph,
+loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=mask_ph,
                                        logits=logits)
 
 with tf.variable_scope("mean_iou_train"):
