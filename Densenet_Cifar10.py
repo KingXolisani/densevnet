@@ -410,14 +410,16 @@ with tf.Session() as sess:
 
             #loss_ = loss.eval()
 
-
             train_loss += cost
             train_acc += train_iou
             pre_index += batch_size
 
             if step == iteration :
+                print(train_loss)
                 train_loss /= iteration # average loss
                 train_acc /= iteration # average accuracy
+
+
 
                 train_summary = tf.Summary(value=[tf.Summary.Value(tag='train_loss', simple_value=train_loss),
                                                   tf.Summary.Value(tag='train_accuracy', simple_value=train_acc)])
