@@ -131,7 +131,7 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    print (tf.shape(logits))
+    print (logits.get_shape())
     print(tf.shape(labels))
     logits = tf.reshape(logits, [tf.shape(logits)[0], num_classes])
     labels = tf.reshape(labels, [tf.shape(labels)[0]])
