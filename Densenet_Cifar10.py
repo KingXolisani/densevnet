@@ -133,8 +133,8 @@ def xentropy_loss(logits, labels, num_classes):
     labels = tf.cast(labels, tf.int32)
     print (logits.get_shape())
     print(labels.get_shape())
-    logits = tf.reshape(logits, [tf.shape(logits)[0], num_classes])
-    labels = tf.reshape(labels, [tf.shape(labels)[0]])
+    logits = tf.reshape(logits, [logits.get_shape(),-1, num_classes])
+    labels = tf.reshape(labels, [labels.get_shape(),-1])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
 
@@ -286,7 +286,6 @@ class DenseNet():
 
        upx1 = self.upsample_layer(Merge1, Merge1.get_shape()[-1], 'up', 2)
        Conv4 = conv_layer(upx1, filters= 3*num_classes , kernel=[3,3], stride=1,layer_name='Conv4')
-       print(Conv4.get_shape())
 
        return Conv4
 
