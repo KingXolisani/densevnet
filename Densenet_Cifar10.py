@@ -282,7 +282,7 @@ class DenseNet():
 
 
 
-       Merge1 = Concatenation([upx2,upx4])
+       Merge1 = Concatenation([Conv3,upx2,upx4])
        #print(Merge1.get_shape())
 
        Conv4 = conv_layer(Merge1, filters= 60 , kernel=[3,3], stride=1,layer_name='Conv4')
