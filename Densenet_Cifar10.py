@@ -131,8 +131,8 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    logits = tf.reshape(logits, [tf.shape(logits)[0], -1, num_classes])
-    labels = tf.reshape(labels, [tf.shape(labels)[0], -1])
+    logits = tf.reshape(logits, [tf.shape(logits)[0], num_classes])
+    labels = tf.reshape(labels, [tf.shape(labels)[0]])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
 
@@ -408,6 +408,7 @@ with tf.Session() as sess:
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
             print(sess.run([loss, opt, iou_update], feed_dict=train_feed_dict))
+            print(cost)
             #loss_ = loss.eval()
 
             train_loss += cost
