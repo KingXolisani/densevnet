@@ -277,7 +277,7 @@ class DenseNet():
 
        Conv2 = conv_layer(Dense2, filters= 24, kernel=[3,3], stride=1,layer_name='Conv2')
        upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 2)
-
+       print(upx2.get_shape())
        Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
 
 
