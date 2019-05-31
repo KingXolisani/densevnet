@@ -405,7 +405,7 @@ with tf.Session() as sess:
                 training : True
             }
 
-            cost,_,_  = loss, opt, iou_update
+            cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
 
             #loss_ = loss.eval()
