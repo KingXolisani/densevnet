@@ -293,7 +293,7 @@ class DenseNet():
        x = flatten(x)
        x = Linear(x)
         '''
-
+       print(output.get_shape())
         # x = tf.reshape(x, [-1, 10])
        return output
 
