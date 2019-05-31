@@ -277,27 +277,18 @@ class DenseNet():
 
        Conv2 = conv_layer(Dense2, filters= 24, kernel=[3,3], stride=1,layer_name='Conv2')
        upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 2)
-       print(upx2.get_shape())
+
        Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
 
 
 
        Merge1 = Concatenation([Conv3,upx2,upx4])
-       #print(Merge1.get_shape())
 
-       Conv4 = conv_layer(Merge1, filters= 60 , kernel=[3,3], stride=1,layer_name='Conv4')
+       upx1 = self.upsample_layer(Merge1, Merge1.get_shape()[-1], 'up', 2)
+       Conv4 = conv_layer(upx1, filters= 3*num_classes , kernel=[3,3], stride=1,layer_name='Conv4')
        print(Conv4.get_shape())
-       output = self.upsample_layer(Conv4, Conv4.get_shape()[-1], 'output', 4)
-       '''
-       x = Batch_Normalization(Merge1, training=self.training, scope='linear_batch')
-       x = Relu(x)
-       x = Global_Average_Pooling(x)
-       x = flatten(x)
-       x = Linear(x)
-        '''
-       print(output.get_shape())
-        # x = tf.reshape(x, [-1, 10])
-       return output
+
+       return Conv4
 
 
 '''
