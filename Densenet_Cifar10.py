@@ -137,12 +137,12 @@ def xentropy_loss(logits, labels, num_classes):
     #print (logits.get_shape()[2])
     #print(labels.get_shape())
     #tf.shape(logits)[1]
-    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
-    labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
-    print (logits.get_shape())
-    print(labels.get_shape())
+    logits_ = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
+    labels_ = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
+    print (logits_.get_shape())
+    print(labels_.get_shape())
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
-            logits=logits, labels=labels, name="loss")
+            logits=logits_, labels=labels_, name="loss")
 
     return loss
 
