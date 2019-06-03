@@ -284,12 +284,12 @@ class DenseNet():
        print (upx2.get_shape())
        Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
        print(Conv3.get_shape())
-       upx1 = self.upsample_layer(Conv3, Conv3.get_shape()[-1], 'up', 2)
-       print (upx1.get_shape())
+       #upx1 = self.upsample_layer(Conv3, Conv3.get_shape()[-1], 'up', 2)
+       #print (upx1.get_shape())
 
 
 
-       Merge1 = Concatenation([upx1,upx2,upx4])
+       Merge1 = Concatenation([Conv3,upx2,upx4])
        print(Merge1.get_shape())
        #upx1 = self.upsample_layer(Merge1, Merge1.get_shape()[-1], 'up', 2)
        Conv4 = conv_layer(Merge1, filters= 3*num_classes , kernel=[3,3], stride=1,layer_name='Conv4')
