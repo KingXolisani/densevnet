@@ -160,7 +160,6 @@ def calculate_iou(mask, prediction, num_classes):
     return iou, update_op
 
 
-
 class DenseNet():
     def __init__(self, x, nb_blocks, filters, training):
         self.nb_blocks = nb_blocks
