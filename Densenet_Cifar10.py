@@ -328,7 +328,7 @@ saver = tf.train.Saver(tf.global_variables())
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
-mask_ph = tf.placeholder(tf.int32, shape=[None, 144, 144, 3])
+mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
 training = tf.placeholder(tf.bool, shape=[])
 learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
