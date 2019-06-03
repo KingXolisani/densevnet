@@ -275,12 +275,11 @@ class DenseNet():
        Dense3 = self.dense_block(input_x=Conv_Down2, filters=16, nb_layers=10, layer_name='dense_3')
 
        Conv1 = conv_layer(Dense3, filters= 24, kernel=[3,3], stride=1,layer_name='Conv1')
-       print(Conv1.get_shape())
-       upx4 = self.upsample_layer(Conv1, Conv1.get_shape()[-1], 'upx4', 8)
-       print (upx4.get_shape())
+       upx4 = self.upsample_layer(Conv1, Conv1.get_shape()[-1], 'upx4', 4)
+
        Conv2 = conv_layer(Dense2, filters= 24, kernel=[3,3], stride=1,layer_name='Conv2')
        print(Conv2.get_shape())
-       upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 4)
+       upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 2)
        print (upx2.get_shape())
        Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
        print(Conv3.get_shape())
