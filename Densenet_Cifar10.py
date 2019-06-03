@@ -137,7 +137,7 @@ def xentropy_loss(logits, labels, num_classes):
     #print (logits.get_shape()[2])
     #print(labels.get_shape())
     #tf.shape(logits)[1]
-    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],logits.get_shape()[3], num_classes])
+    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
     labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
     print (logits.get_shape())
     print(labels.get_shape())
