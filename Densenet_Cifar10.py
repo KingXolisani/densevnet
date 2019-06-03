@@ -25,7 +25,7 @@ nesterov_momentum = 0.9
 weight_decay = 1e-4
 
 # Label & batch_size
-batch_size = 32
+batch_size = 1
 
 iteration = 40
 # batch_size * iteration = data_set_number
