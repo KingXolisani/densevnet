@@ -150,7 +150,7 @@ def calculate_iou(mask, prediction, num_classes):
     """
     print(mask.get_shape())
     print(prediction.get_shape())
-    mask = tf.reshape(mask, [mask.get_shape()[1],mask.get_shape()[2],mask.get_shape()[3], num_classes])
+    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [mask.get_shape()[1],mask.get_shape()[2],mask.get_shape()[3], num_classes])
     prediction = tf.reshape(prediction, shape=[prediction.get_shape()[1],prediction.get_shape()[2], 3, num_classes])
     print(mask.get_shape())
     print(prediction.get_shape())
