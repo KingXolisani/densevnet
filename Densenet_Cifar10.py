@@ -131,18 +131,10 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    #print (logits.get_shape())
-    #print (logits.get_shape()[0])
-    #print (logits.get_shape()[1])
-    #print (logits.get_shape()[2])
-    #print(labels.get_shape())
-    #tf.shape(logits)[1]
-    logits_ = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
-    labels_ = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
-    print (logits_.get_shape())
-    print(labels_.get_shape())
+    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
+    labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
-            logits=logits_, labels=labels_, name="loss")
+            logits=logits, labels=labels, name="loss")
 
     return loss
 
@@ -156,10 +148,10 @@ def calculate_iou(mask, prediction, num_classes):
         iou: Tensor, average iou over the batch.
         update_op: Tensor op, update operation for the iou metric.
     """
-    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [
-            tf.shape(mask)[0], -1, num_classes])
-    prediction = tf.reshape(
-            prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
+    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [tf.shape(mask)[0], -1, num_classes])
+    prediction = tf.reshape(prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
+    print(mask.get_shape())
+    print(prediction.get_shape())
     iou, update_op = tf.metrics.mean_iou(
             tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
 
