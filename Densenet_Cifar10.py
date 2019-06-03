@@ -131,8 +131,8 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    #print (logits.get_shape())
-    #print(labels.get_shape())
+    print (logits.get_shape())
+    print(labels.get_shape())
     logits = tf.reshape(logits, [tf.shape(logits)[0],-1, num_classes])
     labels = tf.reshape(labels, [tf.shape(labels)[0],-1])
     #print (logits.get_shape())
@@ -262,7 +262,6 @@ class DenseNet():
             return x
 
     def Dense_net(self, input_x):
-       #Conv0 = conv_layer(input_x, filter= 2*self.filters, kernel=[5,5], stride=2,layer_name='Conv_Down0')
 
        Conv_Down0 = self.transition_layer(input_x, [5,5], scope='Conv_Down0')
 
@@ -278,21 +277,14 @@ class DenseNet():
        upx4 = self.upsample_layer(Conv1, Conv1.get_shape()[-1], 'upx4', 4)
 
        Conv2 = conv_layer(Dense2, filters= 24, kernel=[3,3], stride=1,layer_name='Conv2')
-       print(Conv2.get_shape())
        upx2 = self.upsample_layer(Conv2, Conv2.get_shape()[-1], 'upx2', 2)
-       print (upx2.get_shape())
+
        Conv3 = conv_layer(Dense1, filters= 24, kernel=[3,3], stride=1,layer_name='Conv3')
-       print(Conv3.get_shape())
-       #upx1 = self.upsample_layer(Conv3, Conv3.get_shape()[-1], 'up', 2)
-       #print (upx1.get_shape())
-
-
 
        Merge1 = Concatenation([Conv3,upx2,upx4])
-       print(Merge1.get_shape())
-       #upx1 = self.upsample_layer(Merge1, Merge1.get_shape()[-1], 'up', 2)
+
        Conv4 = conv_layer(Merge1, filters= 3*num_classes , kernel=[3,3], stride=1,layer_name='Conv4')
-       print(Conv4.get_shape())
+
        return Conv4
 
 
