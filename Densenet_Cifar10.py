@@ -27,7 +27,7 @@ weight_decay = 1e-4
 # Label & batch_size
 batch_size = 1
 
-iteration = 40
+iteration = 1464
 # batch_size * iteration = data_set_number
 
 test_iteration = 10
@@ -396,7 +396,6 @@ with tf.Session() as sess:
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
             #print(sess.run([loss, opt, iou_update], feed_dict=train_feed_dict))
-            print(loss.eval())
             #loss_ = loss.eval()
 
             train_loss += cost
