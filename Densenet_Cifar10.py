@@ -140,7 +140,7 @@ def xentropy_loss(logits, labels, num_classes):
     #        logits=logits, labels=labels, name="loss")
 
     loss = (labels+1e-10)*tf.log(tf.nn.softmax(logits) + 1e-10)
-    print(loss.eval(session=tf.Session()))
+
     return loss
 
 def calculate_iou(mask, prediction, num_classes):
@@ -359,7 +359,7 @@ with tf.Session() as sess:
                 learning_rate: epoch_learning_rate,
                 training : True
             }
-
+            print(loss.eval(session=tf.Session()))
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
 
