@@ -359,10 +359,10 @@ with tf.Session() as sess:
                 learning_rate: epoch_learning_rate,
                 training : True
             }
-            print(loss.eval(session=tf.Session()))
+
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
-
+            print(loss.eval())
             train_loss += cost
             train_acc += train_iou
             pre_index += batch_size
