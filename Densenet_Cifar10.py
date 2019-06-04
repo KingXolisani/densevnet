@@ -27,7 +27,7 @@ weight_decay = 1e-4
 # Label & batch_size
 batch_size = 1
 
-iteration = 1464/batch_size
+iteration = 1464//batch_size
 # batch_size * iteration = data_set_number
 
 test_iteration = 10
