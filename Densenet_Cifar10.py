@@ -27,7 +27,7 @@ weight_decay = 1e-4
 # Label & batch_size
 batch_size = 1
 
-iteration = 1464
+iteration = 1464/batch_size
 # batch_size * iteration = data_set_number
 
 test_iteration = 10
@@ -131,8 +131,8 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
-    labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
+    logits = tf.reshape(logits, [logits.get_shape()[1]*logits.get_shape()[2]*3, num_classes])
+    labels = tf.reshape(labels, [labels.get_shape()[1]*labels.get_shape()[2]* labels.get_shape()[3]])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
 
@@ -283,44 +283,6 @@ class DenseNet():
 
        return Conv4
 
-
-'''
-train_x, train_y, test_x, test_y = prepare_data()
-train_x, test_x = color_preprocessing(train_x, test_x)
-
-# image_size = 32, img_channels = 3, class_num = 10 in cifar10
-x = tf.placeholder(tf.float32, shape=[None, image_size, image_size, img_channels])
-label = tf.placeholder(tf.float32, shape=[None, class_num])
-
-training_flag = tf.placeholder(tf.bool)
-
-
-learning_rate = tf.placeholder(tf.float32, name='learning_rate')
-
-logits = DenseNet(x=x, nb_blocks=nb_block, filters=growth_k, training=training_flag).model
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=label, logits=logits))
-
-"""
-l2_loss = tf.add_n([tf.nn.l2_loss(var) for var in tf.trainable_variables()])
-optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=nesterov_momentum, use_nesterov=True)
-train = optimizer.minimize(cost + l2_loss * weight_decay)
-
-In paper, use MomentumOptimizer
-init_learning_rate = 0.1
-
-but, I'll use AdamOptimizer
-"""
-
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate, epsilon=epsilon)
-train = optimizer.minimize(cost)
-
-
-correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(label, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-saver = tf.train.Saver(tf.global_variables())
-'''
-
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
@@ -395,8 +357,6 @@ with tf.Session() as sess:
 
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
-            #print(sess.run([loss, opt, iou_update], feed_dict=train_feed_dict))
-            #loss_ = loss.eval()
 
             train_loss += cost
             train_acc += train_iou
