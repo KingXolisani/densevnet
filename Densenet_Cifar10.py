@@ -140,7 +140,7 @@ def xentropy_loss(logits, labels, num_classes):
     #        logits=logits, labels=labels, name="loss")
 
     loss = labels*tf.log(tf.nn.softmax(logits) + 1e-10)
-
+    print(loss)
     return loss
 
 def calculate_iou(mask, prediction, num_classes):
