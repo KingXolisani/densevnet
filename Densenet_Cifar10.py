@@ -15,7 +15,7 @@ from tensorflow.contrib.framework import arg_scope
 # Hyperparameter
 growth_k = 12
 nb_block = 2 # how many (dense block + Transition Layer) ?
-init_learning_rate = 1e-8
+init_learning_rate = 1e-4
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.2
 num_classes = 20
@@ -131,10 +131,12 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    logits = tf.reshape(logits, [logits.get_shape()[1]*logits.get_shape()[2]*3, num_classes])
-    labels = tf.reshape(labels, [labels.get_shape()[1]*labels.get_shape()[2]* labels.get_shape()[3]])
-    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
-            logits=logits, labels=labels, name="loss")
+    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
+    labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
+    #loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
+    #        logits=logits, labels=labels, name="loss")
+
+    loss = labels*tf.log(tf.nn.softmax(logits) + 1e-10)
 
     return loss
 
