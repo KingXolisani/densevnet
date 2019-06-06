@@ -372,11 +372,11 @@ with tf.Session() as sess:
 
         for step in range(1, iteration + 1):
             if pre_index+batch_size < 1464:
-                batch_x = x_train[pre_index: pre_index+batch_size]
-                batch_y = y_train[pre_index: pre_index+batch_size]
+                batch_x = x_train[pre_index]
+                batch_y = y_train[pre_index]
             else:
-                batch_x = x_train[pre_index: ]
-                batch_y = y_train[pre_index: ]
+                batch_x = x_train[pre_index]
+                batch_y = y_train[pre_index]
 
             #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
 
