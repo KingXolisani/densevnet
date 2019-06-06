@@ -60,14 +60,14 @@ label_colours = [(0,0,0)
 
 def decode_labels(mask):
     """Decode batch of segmentation masks.
-
     Args:
       label_batch: result of inference after taking argmax.
-
     Returns:
       An batch of RGB images of the same size
     """
     img = Image.new('RGB', (len(mask[0]), len(mask)))
+    print(len(mask[0]))
+    print(len(mask))
     pixels = img.load()
     for j_, j in enumerate(mask):
         for k_, k in enumerate(j):
