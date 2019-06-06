@@ -1,5 +1,7 @@
 import tensorflow as tf
 import numpy as np
+from PIL import Image
+
 #import utility
 import os
 from tflearn.layers.conv import global_avg_pool
@@ -18,7 +20,7 @@ nb_block = 2 # how many (dense block + Transition Layer) ?
 init_learning_rate = 1e-4
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.2
-num_classes = 21
+num_classes = 20
 
 # Momentum Optimizer will use
 nesterov_momentum = 0.9
@@ -43,6 +45,36 @@ def read_dataset(hf5):
     y_train = hf.get('y_train')
 
     return x_train, y_train
+
+# Colour map.
+label_colours = [(0,0,0)
+                # 0=background
+                ,(128,0,0),(0,128,0),(128,128,0),(0,0,128),(128,0,128)
+                # 1=aeroplane, 2=bicycle, 3=bird, 4=boat, 5=bottle
+                ,(0,128,128),(128,128,128),(64,0,0),(192,0,0),(64,128,0)
+                # 6=bus, 7=car, 8=cat, 9=chair, 10=cow
+                ,(192,128,0),(64,0,128),(192,0,128),(64,128,128),(192,128,128)
+                # 11=diningtable, 12=dog, 13=horse, 14=motorbike, 15=person
+                ,(0,64,0),(128,64,0),(0,192,0),(128,192,0),(0,64,128)]
+                # 16=potted plant, 17=sheep, 18=sofa, 19=train, 20=tv/monitor
+
+def decode_labels(mask):
+    """Decode batch of segmentation masks.
+
+    Args:
+      label_batch: result of inference after taking argmax.
+
+    Returns:
+      An batch of RGB images of the same size
+    """
+    img = Image.new('RGB', (len(mask[0]), len(mask)))
+    pixels = img.load()
+    for j_, j in enumerate(mask):
+        for k_, k in enumerate(j):
+            if k < 21:
+                pixels[k_,j_] = label_colours[k]
+
+    return np.array(img)
 
 def conv_layer(input_x, filters, kernel, stride=1, layer_name="conv"):
     with tf.name_scope(layer_name):
