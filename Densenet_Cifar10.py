@@ -286,7 +286,9 @@ class DenseNet():
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
-x_train, y_train = x_train/255, y_train/255
+x_train = x_train/255
+y_train = y_train/255
+
 print(x_train[0][0])
 print(y_train[0][0])
 
