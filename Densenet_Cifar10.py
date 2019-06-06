@@ -65,7 +65,7 @@ def decode_labels(mask):
     Returns:
       An batch of RGB images of the same size
     """
-    img = Image.new('RGB', (len(mask), len(mask)))
+    img = Image.new('RGB', (len(mask[0]), len(mask)))
     print(len(mask[0]))
     print(len(mask))
     pixels = img.load()
