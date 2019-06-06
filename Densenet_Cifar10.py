@@ -285,9 +285,9 @@ class DenseNet():
        return Conv4
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
-
-x_train = x_train/255
-y_train = y_train/255
+#labels = tf.cast(labels, tf.int32)
+x_train = x_train/255.0
+y_train = y_train/255.0
 
 print(x_train[0][0])
 print(y_train[0][0])
