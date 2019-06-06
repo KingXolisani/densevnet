@@ -68,7 +68,7 @@ def decode_labels(mask):
     img = Image.new('RGB', (len(mask[0]), len(mask)))
     print(len(mask[0]))
     print(len(mask))
-    print(img.get_shape())
+    print(img.shape())
     pixels = img.load()
     for j_, j in enumerate(mask):
         for k_, k in enumerate(j):
