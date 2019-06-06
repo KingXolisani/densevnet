@@ -131,7 +131,7 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])/255
+    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
     labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
@@ -286,11 +286,6 @@ class DenseNet():
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 #labels = tf.cast(labels, tf.int32)
-x_train = x_train/255.0
-y_train = y_train/255.0
-
-print(x_train[0][0])
-print(y_train[0][0])
 
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
 mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
@@ -356,8 +351,8 @@ with tf.Session() as sess:
             #batch_x = data_augmentation(batch_x)
 
             train_feed_dict = {
-                image_ph: batch_x,
-                mask_ph: batch_y,
+                image_ph: batch_x/255,
+                mask_ph: batch_y/255,
                 learning_rate: epoch_learning_rate,
                 training : True
             }
