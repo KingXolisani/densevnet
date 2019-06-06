@@ -285,7 +285,6 @@ class DenseNet():
        return Conv4
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
-#labels = tf.cast(labels, tf.int32)
 
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
 mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
