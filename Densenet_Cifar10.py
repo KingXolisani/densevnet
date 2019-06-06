@@ -286,6 +286,9 @@ class DenseNet():
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
+print(x_train[0][0])
+print(y_train[0][0])
+
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
 mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
 training = tf.placeholder(tf.bool, shape=[])
