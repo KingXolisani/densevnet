@@ -20,7 +20,7 @@ nb_block = 2 # how many (dense block + Transition Layer) ?
 init_learning_rate = 1e-4
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.2
-num_classes = 20
+num_classes = 21
 
 # Momentum Optimizer will use
 nesterov_momentum = 0.9
@@ -381,9 +381,12 @@ with tf.Session() as sess:
 
             #batch_x = data_augmentation(batch_x)
 
+            batch_y = decode_labels(batch_y)
+            print(batch_y.get_shape())
+
             train_feed_dict = {
-                image_ph: batch_x/255,
-                mask_ph: batch_y/255,
+                image_ph: batch_x,
+                mask_ph: batch_y,
                 learning_rate: epoch_learning_rate,
                 training : True
             }
