@@ -70,7 +70,7 @@ def decode_labels(mask):
     print(len(mask))
     pixels = img.load()
     for j_, j in enumerate(mask):
-        for k_, k in enumerate(j):
+        for k_, k in enumerate(j[0]):
             if k < 21:
                 pixels[k_,j_] = label_colours[k]
 
