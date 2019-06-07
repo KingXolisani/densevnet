@@ -364,7 +364,6 @@ with tf.Session() as sess:
         pre_index = 0
         train_acc = 0.0
         train_loss = 0.0
-        y_train1 = []
 
 
         for step in range(1, iteration + 1):
@@ -378,7 +377,7 @@ with tf.Session() as sess:
             #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
 
             #batch_x = data_augmentation(batch_x)
-            print(batch_y.get_shape())
+            print(batch_y.shape())
             batch_y = decode_labels(batch_y)
             print(batch_y.get_shape())
 
