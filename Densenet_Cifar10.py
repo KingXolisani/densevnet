@@ -61,20 +61,14 @@ label_colours = [(0,0,0)
 def decode_labels(mask):
     """Decode batch of segmentation masks.
     Args:
-      label_batch: result of inference after taking argmax.
+        An batch of RGB images of the same size
     Returns:
-      An batch of RGB images of the same size
+      label_batch: result of inference after taking argmax.
     """
 
-    img = Image.new('RGB', (len(mask[0]), len(mask)))
-    print(len(mask[0]))
-    print(len(mask))
-    pixels = img.load()
-    print(mask[0])
-    for j_, j in enumerate(mask[0]):
-        print(j)
+
+    for j_, j in enumerate(mask):
         for k_, k in enumerate(j):
-            print(k)
             if k < 21:
                 pixels[k_,j_] = label_colours[k]
 
@@ -328,7 +322,6 @@ logits = DenseNet(x=image_ph, nb_blocks=nb_block, filters=growth_k, training=tra
 loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
 # tensorflow api
 
-
 with tf.variable_scope("mean_iou_train"):
     iou, iou_update = calculate_iou(mask_ph, logits, num_classes)
 
@@ -380,7 +373,7 @@ with tf.Session() as sess:
 
             #batch_x = data_augmentation(batch_x)
             #batch_y = tf.convert_to_tensor(batch_y, np.float32)
-            print(batch_y.shape)
+            print(batch_y[0].shape)
             batch_y = decode_labels(batch_y)
             print(batch_y.shape)
 
