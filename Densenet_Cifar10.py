@@ -377,10 +377,10 @@ with tf.Session() as sess:
             #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
 
             #batch_x = data_augmentation(batch_x)
-            batch_y = tf.convert_to_tensor(batch_y, np.float32)
-            print(batch_y.get_shape())
+            #batch_y = tf.convert_to_tensor(batch_y, np.float32)
+            print(batch_y.shape)
             batch_y = decode_labels(batch_y)
-            print(batch_y.get_shape())
+            print(batch_y.shape)
 
             train_feed_dict = {
                 image_ph: batch_x,
