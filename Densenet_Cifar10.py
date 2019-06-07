@@ -66,8 +66,11 @@ def decode_labels(mask,label_colours):
       label_batch: result of inference after taking argmax.
     """
     for j in range(len(mask)):
+        print(mask)
         for k in mask[j]:
+            print(mask[j])
             for i in range(len(label_colours)):
+                print(i)
                 if label_colours[i] == k:
                     mask[j] = i
                 else:
