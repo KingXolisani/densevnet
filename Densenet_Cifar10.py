@@ -65,14 +65,16 @@ def decode_labels(mask):
     Returns:
       label_batch: result of inference after taking argmax.
     """
+    for j in range(len(mask)):
+        for k in mask[j]:
+            for i in range(len(label_colours))
+                if label_colours[i] == k:
+                    mask[j] = i
+                else:
+                    mask[j] = 0
 
-
-    for j_, j in enumerate(mask):
-        for k_, k in enumerate(j):
-            if k < 21:
-                pixels[k_,j_] = label_colours[k]
-
-    return np.array(img)
+    print(mask)
+    return np.array(mask)
 
 def conv_layer(input_x, filters, kernel, stride=1, layer_name="conv"):
     with tf.name_scope(layer_name):
@@ -374,7 +376,7 @@ with tf.Session() as sess:
             #batch_x = data_augmentation(batch_x)
             #batch_y = tf.convert_to_tensor(batch_y, np.float32)
             print(batch_y[0].shape)
-            batch_y = decode_labels(batch_y)
+            batch_y = decode_labels(batch_y, label_colours)
             print(batch_y.shape)
 
             train_feed_dict = {
