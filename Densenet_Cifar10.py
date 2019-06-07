@@ -65,7 +65,7 @@ def decode_labels(mask):
     Returns:
       An batch of RGB images of the same size
     """
-    print(mask.shape())
+
     img = Image.new('RGB', (len(mask[0]), len(mask)))
     print(len(mask[0]))
     print(len(mask))
@@ -183,12 +183,8 @@ def calculate_iou(mask, prediction, num_classes):
         iou: Tensor, average iou over the batch.
         update_op: Tensor op, update operation for the iou metric.
     """
-    print(mask.get_shape())
-    print(prediction.get_shape())
     mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [mask.get_shape()[1],mask.get_shape()[2],mask.get_shape()[3], num_classes])
     prediction = tf.reshape(prediction, shape=[prediction.get_shape()[1],prediction.get_shape()[2], 3, num_classes])
-    print(mask.get_shape())
-    print(prediction.get_shape())
     iou, update_op = tf.metrics.mean_iou(
             tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
 
@@ -382,7 +378,7 @@ with tf.Session() as sess:
             #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
 
             #batch_x = data_augmentation(batch_x)
-
+            print(batch_y.get_shape())
             batch_y = decode_labels(batch_y)
             print(batch_y.get_shape())
 
