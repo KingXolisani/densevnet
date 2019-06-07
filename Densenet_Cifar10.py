@@ -67,7 +67,7 @@ def decode_labels(mask):
     """
     for j in range(len(mask)):
         for k in mask[j]:
-            for i in range(len(label_colours))
+            for i in range(len(label_colours)):
                 if label_colours[i] == k:
                     mask[j] = i
                 else:
