@@ -29,7 +29,7 @@ weight_decay = 1e-4
 # Label & batch_size
 batch_size = 1
 
-iteration = 1464//batch_size
+iteration = 12031//batch_size
 # batch_size * iteration = data_set_number
 
 test_iteration = 10
@@ -166,7 +166,7 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     labels = tf.cast(labels, tf.int32)
-    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],3, num_classes])
+    logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],1, num_classes])
     labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
@@ -311,14 +311,14 @@ class DenseNet():
 
        Merge1 = Concatenation([Conv3,upx2,upx4])
 
-       Conv4 = conv_layer(Merge1, filters= 3*num_classes , kernel=[3,3], stride=1,layer_name='Conv4')
+       Conv4 = conv_layer(Merge1, filters= num_classes , kernel=[3,3], stride=1,layer_name='Conv4')
 
        return Conv4
 
 x_train, y_train  = read_dataset('VOC_dataset.h5')
 
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
-mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 3])
+mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 1])
 training = tf.placeholder(tf.bool, shape=[])
 learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
@@ -367,20 +367,12 @@ with tf.Session() as sess:
 
 
         for step in range(1, iteration + 1):
-            if pre_index+batch_size < 1464:
-                batch_x = x_train[pre_index]
-                batch_y = y_train[pre_index]
+            if pre_index+batch_size < 12031:
+                batch_x = x_train[pre_index:pre_index+ batch_size]
+                batch_y = y_train[pre_index:pre_index+ batch_size]
             else:
-                batch_x = x_train[pre_index]
-                batch_y = y_train[pre_index]
-
-            #image_batch, mask_batch, _ = sess.run([x_train, y_train, reset_iou])
-
-            #batch_x = data_augmentation(batch_x)
-            #batch_y = tf.convert_to_tensor(batch_y, np.float32)
-            print(batch_y[0].shape)
-            batch_y = decode_labels(batch_y, label_colours)
-            print(batch_y.shape)
+                batch_x = x_train[pre_index:]
+                batch_y = y_train[pre_index:]
 
             train_feed_dict = {
                 image_ph: batch_x,
