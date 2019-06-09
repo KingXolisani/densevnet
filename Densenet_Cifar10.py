@@ -386,6 +386,8 @@ with tf.Session() as sess:
             if train_step % 50 == 0:
                 print("Step: ", train_step, "Cost: ",cost, "IoU:", train_iou)
 
+                with open('logs.txt', 'a') as f :
+                    f.write(line)
 
 
     '''
@@ -442,10 +444,10 @@ with tf.Session() as sess:
                 line = "epoch: %d/%d, train_loss: %.4f, train_acc: %.4f \n" % (
                     epoch, total_epochs, train_loss, train_acc) #, test_loss, test_acc)
                 print(line)
-                '''
+
                 with open('logs.txt', 'a') as f :
                     f.write(line)
-
+                    '''
 
 
         saver.save(sess=sess, save_path='./model/dense.ckpt')
