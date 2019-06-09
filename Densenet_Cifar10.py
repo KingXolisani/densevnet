@@ -373,8 +373,8 @@ with tf.Session() as sess:
         for train_step in range(data_legth // batch_size):
 
             #image_batch, mask_batch, _ = sess.run([image_ph, mask_ph, reset_iou])
-            image_batch = x_train[train_step-1 :train_step]
-            mask_batch = y_train[train_step-1 :train_step]
+            image_batch = x_train[train_step :train_step + batch_size]
+            mask_batch = y_train[train_step :train_step + batch_size]
 
             feed_dict = {image_ph: image_batch,
                         mask_ph: mask_batch,
