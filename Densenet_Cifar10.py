@@ -169,7 +169,6 @@ def xentropy_loss(logits, labels, num_classes):
     """
     #labels = tf.one_hot(tf.squeeze(labels), depth = num_classes)
     labels = tf.cast(labels, tf.int32)
-    labels = labels < 21
     #logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],1, num_classes])
     logits = tf.reshape(logits, [tf.shape(logits)[0], -1, num_classes])
     #labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
@@ -376,6 +375,8 @@ with tf.Session() as sess:
             image_batch = x_train[train_step :train_step + batch_size]
             mask_batch = y_train[train_step :train_step + batch_size]
 
+            for i in image_batch[0]:
+                print(i)
             feed_dict = {image_ph: image_batch,
                         mask_ph: mask_batch,
                         training: True}
