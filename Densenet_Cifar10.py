@@ -381,6 +381,8 @@ with tf.Session() as sess:
                 training : True
             }
 
+            print(batch_x)
+            print(batch_y)
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
 
