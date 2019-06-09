@@ -29,7 +29,9 @@ weight_decay = 1e-4
 # Label & batch_size
 batch_size = 1
 
-iteration = 12031//batch_size
+data_legth = 12031
+
+iteration = data_legth//batch_size
 # batch_size * iteration = data_set_number
 
 test_iteration = 10
@@ -361,6 +363,32 @@ with tf.Session() as sess:
 
     summary_writer = tf.summary.FileWriter('./logs', sess.graph)
 
+    for epoch in range(total_epochs):
+
+        #writer = tf.summary.FileWriter(os.path.dirname(save_dir), sess.graph)
+        #sess.run([train_queue_init, eval_queue_init])
+        total_train_cost, total_val_cost = 0, 0
+        total_train_iou, total_val_iou = 0, 0
+
+        for train_step in range(data_legth // batch_size):
+
+            #image_batch, mask_batch, _ = sess.run([image_ph, mask_ph, reset_iou])
+            feed_dict = {image_ph: image_batch,
+                        mask_ph: mask_batch,
+                        training: True}
+
+            cost, _, _ = sess.run([loss, opt, iou_update], feed_dict=feed_dict)
+            train_iou = sess.run(iou, feed_dict=feed_dict)
+
+            total_train_cost += cost
+            total_train_iou += train_iou
+
+            if train_step % 50 == 0:
+                print("Step: ", train_step, "Cost: ",cost, "IoU:", train_iou)
+
+
+
+    '''
     epoch_learning_rate = init_learning_rate
     for epoch in range(1, total_epochs + 1):
         if epoch == (total_epochs * 0.5) or epoch == (total_epochs * 0.75):
@@ -370,9 +398,8 @@ with tf.Session() as sess:
         train_acc = 0.0
         train_loss = 0.0
 
-
         for step in range(1, iteration + 1):
-            if pre_index+batch_size < 12031:
+            if pre_index+batch_size < data_legth:
                 batch_x = x_train[pre_index:pre_index+ batch_size]
                 batch_y = y_train[pre_index:pre_index+ batch_size]
             else:
@@ -415,7 +442,7 @@ with tf.Session() as sess:
                 line = "epoch: %d/%d, train_loss: %.4f, train_acc: %.4f \n" % (
                     epoch, total_epochs, train_loss, train_acc) #, test_loss, test_acc)
                 print(line)
-
+                '''
                 with open('logs.txt', 'a') as f :
                     f.write(line)
 
