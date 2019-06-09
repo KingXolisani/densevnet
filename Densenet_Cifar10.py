@@ -376,8 +376,8 @@ with tf.Session() as sess:
             mask_batch = y_train[train_step :train_step + batch_size]
 
             for i in range(len(mask_batch[0])):
-                if mask_batch[0][i] > 20:
-                    print(mask_batch[0][i])
+                print(mask_batch[0][i])
+                if mask_batch[0][i] > 20:    
                     mask_batch[0][i] = 20
             feed_dict = {image_ph: image_batch,
                         mask_ph: mask_batch,
