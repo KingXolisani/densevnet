@@ -383,14 +383,16 @@ with tf.Session() as sess:
             cost, _, _ = sess.run([loss, opt, iou_update], feed_dict=feed_dict)
             train_iou = sess.run(iou, feed_dict=feed_dict)
 
+            print(sess.run([loss, opt, iou_update], feed_dict=feed_dict))
+
             total_train_cost += cost
             total_train_iou += train_iou
 
             if train_step % 50 == 0:
                 print("Step: ", train_step, "Cost: ",cost, "IoU:", train_iou)
 
-                with open('logs.txt', 'a') as f :
-                    f.write(line)
+                #with open('logs.txt', 'a') as f :
+                #    f.write(line)
 
      #saver.save(sess=sess, save_path='./model/dense.ckpt')
     '''
