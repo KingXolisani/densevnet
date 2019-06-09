@@ -389,7 +389,7 @@ with tf.Session() as sess:
                 with open('logs.txt', 'a') as f :
                     f.write(line)
 
-
+     saver.save(sess=sess, save_path='./model/dense.ckpt')
     '''
     epoch_learning_rate = init_learning_rate
     for epoch in range(1, total_epochs + 1):
@@ -448,6 +448,3 @@ with tf.Session() as sess:
                 with open('logs.txt', 'a') as f :
                     f.write(line)
                     '''
-
-
-        saver.save(sess=sess, save_path='./model/dense.ckpt')
