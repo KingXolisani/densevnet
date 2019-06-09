@@ -17,7 +17,7 @@ from tensorflow.contrib.framework import arg_scope
 # Hyperparameter
 growth_k = 12
 nb_block = 2 # how many (dense block + Transition Layer) ?
-init_learning_rate = 1e-4
+init_learning_rate = 1e-6
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.2
 num_classes = 21
