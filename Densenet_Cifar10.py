@@ -169,6 +169,7 @@ def xentropy_loss(logits, labels, num_classes):
     """
     #labels = tf.one_hot(tf.squeeze(labels), depth = num_classes)
     labels = tf.cast(labels, tf.int32)
+    labels = labels < 21
     #logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],1, num_classes])
     logits = tf.reshape(logits, [tf.shape(logits)[0], -1, num_classes])
     #labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
