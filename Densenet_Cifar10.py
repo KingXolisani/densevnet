@@ -382,7 +382,7 @@ with tf.Session() as sess:
             train_feed_dict = {
                 image_ph: batch_x,
                 mask_ph: batch_y,
-                learning_rate: epoch_learning_rate,
+                #learning_rate: epoch_learning_rate,
                 training : True
             }
 
