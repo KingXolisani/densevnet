@@ -168,7 +168,7 @@ def xentropy_loss(logits, labels, num_classes):
         loss: The cross entropy loss over each image in the batch.
     """
     #labels = tf.one_hot(tf.squeeze(labels), depth = num_classes)
-    #labels = tf.cast(labels, tf.int32)
+    labels = tf.cast(labels, tf.int32)
     #logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],1, num_classes])
     logits = tf.reshape(logits, [tf.shape(logits)[0], -1, num_classes])
     #labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
@@ -193,8 +193,7 @@ def calculate_iou(mask, prediction, num_classes):
     mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [tf.shape(mask)[0], -1, num_classes])
     #prediction = tf.reshape(prediction, shape=[prediction.get_shape()[1],prediction.get_shape()[2], 1, num_classes])
     prediction = tf.reshape(prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
-    iou, update_op = tf.metrics.mean_iou(
-            tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
+    iou, update_op = tf.metrics.mean_iou(tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
 
     return iou, update_op
 
@@ -383,7 +382,7 @@ with tf.Session() as sess:
             cost, _, _ = sess.run([loss, opt, iou_update], feed_dict=feed_dict)
             train_iou = sess.run(iou, feed_dict=feed_dict)
 
-            print(sess.run([loss, opt, iou_update], feed_dict=feed_dict))
+            #print(sess.run([loss, opt, iou_update], feed_dict=feed_dict))
 
             total_train_cost += cost
             total_train_iou += train_iou
