@@ -186,8 +186,10 @@ def calculate_iou(mask, prediction, num_classes):
         iou: Tensor, average iou over the batch.
         update_op: Tensor op, update operation for the iou metric.
     """
-    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [mask.get_shape()[1],mask.get_shape()[2],mask.get_shape()[3], num_classes])
-    prediction = tf.reshape(prediction, shape=[prediction.get_shape()[1],prediction.get_shape()[2], 1, num_classes])
+    #mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [mask.get_shape()[1],mask.get_shape()[2],mask.get_shape()[3], num_classes])
+    mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [tf.shape(mask)[0], -1, num_classes])
+    #prediction = tf.reshape(prediction, shape=[prediction.get_shape()[1],prediction.get_shape()[2], 1, num_classes])
+    prediction = tf.reshape(prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
     iou, update_op = tf.metrics.mean_iou(
             tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
 
