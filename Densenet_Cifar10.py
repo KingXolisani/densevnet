@@ -8,11 +8,6 @@ from tflearn.layers.conv import global_avg_pool
 from tensorflow.contrib.layers import batch_norm, flatten
 from tensorflow.contrib.layers import xavier_initializer
 from tensorflow.contrib.framework import arg_scope
-#from cifar10 import *
-
-# Training data
-#train_image_path = 'data/images'
-#train_mask_path = 'data/masks'
 
 # Hyperparameter
 growth_k = 12
@@ -27,12 +22,12 @@ nesterov_momentum = 0.9
 weight_decay = 1e-4
 
 # Label & batch_size
-batch_size = 1
+batch_size = 32
 
 data_legth = 12031
 
-iteration = data_legth//batch_size
 # batch_size * iteration = data_set_number
+iteration = 376
 
 test_iteration = 10
 
@@ -48,39 +43,6 @@ def read_dataset(hf5):
 
     return x_train, y_train
 
-# Colour map.
-label_colours = [(0,0,0)
-                # 0=background
-                ,(128,0,0),(0,128,0),(128,128,0),(0,0,128),(128,0,128)
-                # 1=aeroplane, 2=bicycle, 3=bird, 4=boat, 5=bottle
-                ,(0,128,128),(128,128,128),(64,0,0),(192,0,0),(64,128,0)
-                # 6=bus, 7=car, 8=cat, 9=chair, 10=cow
-                ,(192,128,0),(64,0,128),(192,0,128),(64,128,128),(192,128,128)
-                # 11=diningtable, 12=dog, 13=horse, 14=motorbike, 15=person
-                ,(0,64,0),(128,64,0),(0,192,0),(128,192,0),(0,64,128)]
-                # 16=potted plant, 17=sheep, 18=sofa, 19=train, 20=tv/monitor
-
-def decode_labels(mask,label_colours):
-    """Decode batch of segmentation masks.
-    Args:
-        An batch of RGB images of the same size
-    Returns:
-      label_batch: result of inference after taking argmax.
-    """
-    for j in range(len(mask)):
-        print(mask)
-        for k in mask[j]:
-            print(mask[j])
-            for i in range(len(label_colours)):
-                print(i)
-                if label_colours[i] == k:
-                    mask[j] = i
-                else:
-                    mask[j] = 0
-
-    print(mask)
-    return np.array(mask)
-
 def conv_layer(input_x, filters, kernel, stride=1, layer_name="conv"):
     with tf.name_scope(layer_name):
         network = tf.layers.conv2d(inputs=input_x, use_bias=False, filters=filters, kernel_size=kernel, strides=stride, padding='SAME')
@@ -94,7 +56,6 @@ def Global_Average_Pooling(x, stride=1):
     return tf.layers.average_pooling2d(inputs=x, pool_size=pool_size, strides=stride) # The stride value does not matter
     It is global average pooling without tflearn
     """
-
     return global_avg_pool(x, name='Global_avg_pooling')
     # But maybe you need to install h5py and curses or not
 
@@ -167,11 +128,8 @@ def xentropy_loss(logits, labels, num_classes):
     Returns:
         loss: The cross entropy loss over each image in the batch.
     """
-    #labels = tf.one_hot(tf.squeeze(labels), depth = num_classes)
     labels = tf.cast(labels, tf.int32)
-    #logits = tf.reshape(logits, [logits.get_shape()[1],logits.get_shape()[2],1, num_classes])
     logits = tf.reshape(logits, [tf.shape(logits)[0], -1, num_classes])
-    #labels = tf.reshape(labels, [labels.get_shape()[1],labels.get_shape()[2], labels.get_shape()[3]])
     labels = tf.reshape(labels, [tf.shape(labels)[0], -1])
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=logits, labels=labels, name="loss")
@@ -189,9 +147,7 @@ def calculate_iou(mask, prediction, num_classes):
         iou: Tensor, average iou over the batch.
         update_op: Tensor op, update operation for the iou metric.
     """
-    #mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [mask.get_shape()[1],mask.get_shape()[2],mask.get_shape()[3], num_classes])
     mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [tf.shape(mask)[0], -1, num_classes])
-    #prediction = tf.reshape(prediction, shape=[prediction.get_shape()[1],prediction.get_shape()[2], 1, num_classes])
     prediction = tf.reshape(prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
     iou, update_op = tf.metrics.mean_iou(tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
 
@@ -206,7 +162,6 @@ class DenseNet():
 
 
     def bottleneck_layer(self, x, filters, scope):
-        # print(x)
         with tf.name_scope(scope):
             x = Batch_Normalization(x, training=self.training, scope=scope+'_batch1')
             x = Relu(x)
@@ -218,17 +173,12 @@ class DenseNet():
             x = conv_layer(x, filters=filters, kernel=[3,3], layer_name=scope+'_conv2')
             x = Drop_out(x, rate=dropout_rate, training=self.training)
 
-            # print(x)
-
             return x
 
     def transition_layer(self, x, kernel, scope):
         with tf.name_scope(scope):
             x = Batch_Normalization(x, training=self.training, scope=scope+'_batch1')
             x = Relu(x)
-            # x = conv_layer(x, filter=self.filters, kernel=[1,1], layer_name=scope+'_conv1')
-
-            # https://github.com/taki0112/Densenet-Tensorflow/issues/10
 
             in_channel = x.shape[-1]
             x = conv_layer(x, filters=24, kernel=kernel, layer_name=scope+'_conv1')
@@ -238,13 +188,11 @@ class DenseNet():
             return x
 
     def upsample_layer(self, bottom,n_channels, name, upscale_factor):
-
         kernel_size = 2*upscale_factor - upscale_factor%2
         stride = upscale_factor
         strides = [1, stride, stride, 1]
 
         def get_bilinear_filter(filter_shape, upscale_factor):
-            #value = (1 - abs((x - centre_location)/ upscale_factor)) * (1 - abs((y - centre_location)/ upscale_factor))
             bilinear = np.zeros([filter_shape[0],filter_shape[1]])
             weights = np.zeros(filter_shape)
 
@@ -274,13 +222,9 @@ class DenseNet():
 
         return deconv
 
-
-
-
     def dense_block(self, input_x, filters, nb_layers, layer_name):
         with tf.name_scope(layer_name):
             layers_concat = list()
-            #layers_concat.append(input_x)
 
             x = self.bottleneck_layer(input_x, filters, scope=layer_name + '_bottleN_' + str(0))
 
@@ -328,10 +272,8 @@ mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 1])
 training = tf.placeholder(tf.bool, shape=[])
 learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
-
 logits = DenseNet(x=image_ph, nb_blocks=nb_block, filters=growth_k, training=training).model
 loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
-# tensorflow api
 
 with tf.variable_scope("mean_iou_train"):
     iou, iou_update = calculate_iou(mask_ph, logits, num_classes)
@@ -349,7 +291,6 @@ reset_iou = tf.variables_initializer(var_list=running_vars)
 
 saver = tf.train.Saver(max_to_keep=20)
 
-
 with tf.Session() as sess:
     ckpt = tf.train.get_checkpoint_state('./model')
     if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
@@ -359,52 +300,13 @@ with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         sess.run(tf.local_variables_initializer())
 
-
     summary_writer = tf.summary.FileWriter('./logs', sess.graph)
-    '''
-    for epoch in range(total_epochs):
 
-        #writer = tf.summary.FileWriter(os.path.dirname(save_dir), sess.graph)
-        #sess.run([train_queue_init, eval_queue_init])
-        total_train_cost, total_val_cost = 0, 0
-        total_train_iou, total_val_iou = 0, 0
-
-        for train_step in range(data_legth // batch_size):
-
-            #image_batch, mask_batch, _ = sess.run([image_ph, mask_ph, reset_iou])
-            image_batch = x_train[train_step :train_step + batch_size]
-            mask_batch = y_train[train_step :train_step + batch_size]
-
-            for y in range(len(mask_batch[0])):
-                for x in range(len(mask_batch[0][y])):
-                    if mask_batch[0][y][x][0] > 20.0:
-                        mask_batch[0][y][x][0] = 0.0
-
-            feed_dict = {image_ph: image_batch,
-                        mask_ph: mask_batch,
-                        training: True}
-
-            cost, _, _ = sess.run([loss, opt, iou_update], feed_dict=feed_dict)
-            train_iou = sess.run(iou, feed_dict=feed_dict)
-
-            #print(sess.run([loss, opt, iou_update], feed_dict=feed_dict))
-
-            total_train_cost += cost
-            total_train_iou += train_iou
-
-            if train_step % 50 == 0:
-                print("Step: ", train_step, "Cost: ",cost, "IoU:", train_iou)
-
-                #with open('logs.txt', 'a') as f :
-                #    f.write(line)
-
-     #saver.save(sess=sess, save_path='./model/dense.ckpt')
-    '''
     epoch_learning_rate = init_learning_rate
     for epoch in range(1, total_epochs + 1):
         if epoch == (total_epochs * 0.5) or epoch == (total_epochs * 0.75):
             epoch_learning_rate = epoch_learning_rate / 10
-        #sess.run([train_queue_init])
+
         pre_index = 0
         train_acc = 0.0
         train_loss = 0.0
@@ -425,15 +327,11 @@ with tf.Session() as sess:
             train_feed_dict = {
                 image_ph: batch_x,
                 mask_ph: batch_y,
-                #learning_rate: epoch_learning_rate,
                 training : True
             }
 
             cost,_,_  = sess.run([loss, opt, iou_update], feed_dict=train_feed_dict)
             train_iou = sess.run(iou, feed_dict=train_feed_dict)
-
-            #print (sess.run([loss, opt, iou_update], feed_dict=train_feed_dict))
-            #print(train_iou)
 
             train_loss += cost
             train_acc += train_iou
