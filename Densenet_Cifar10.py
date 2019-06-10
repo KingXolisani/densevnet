@@ -375,7 +375,7 @@ with tf.Session() as sess:
             image_batch = x_train[train_step :train_step + batch_size]
             mask_batch = y_train[train_step :train_step + batch_size]
             for y in range(len(mask_batch[0])):
-                for x in range(len(mask_batch[0][y]))
+                for x in range(len(mask_batch[0][y])):
                     #print(mask_batch[0])
                     if mask_batch[0][y][x] > 20:
                         mask_batch[0][y][x] = 20
