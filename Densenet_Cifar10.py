@@ -319,10 +319,12 @@ with tf.Session() as sess:
                 batch_x = x_train[pre_index:]
                 batch_y = y_train[pre_index:]
 
-            for y in range(len(batch_y[0])):
-                for x in range(len(batch_y[0][y])):
-                    if batch_y[0][y][x][0] > 20.0:
-                        batch_y[0][y][x][0] = 0.0
+            for batch in range(len(batch_y)):
+                for y in range(len(batch_y[batch])):
+                    for x in range(len(batch_y[batch][y])):
+                        print(batch_y[batch][y][x][0])
+                        if batch_y[batch][y][x][0] > 20.0:
+                            batch_y[batch][y][x][0] = 0.0
 
             train_feed_dict = {
                 image_ph: batch_x,
