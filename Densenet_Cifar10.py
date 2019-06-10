@@ -361,7 +361,7 @@ with tf.Session() as sess:
 
 
     summary_writer = tf.summary.FileWriter('./logs', sess.graph)
-
+    '''
     for epoch in range(total_epochs):
 
         #writer = tf.summary.FileWriter(os.path.dirname(save_dir), sess.graph)
@@ -417,6 +417,11 @@ with tf.Session() as sess:
                 batch_x = x_train[pre_index:]
                 batch_y = y_train[pre_index:]
 
+            for y in range(len(batch_y[0])):
+                for x in range(len(batch_y[0][y])):
+                    if batch_y[0][y][x][0] > 20.0:
+                        batch_y[0][y][x][0] = 0.0
+
             train_feed_dict = {
                 image_ph: batch_x,
                 mask_ph: batch_y,
@@ -456,4 +461,5 @@ with tf.Session() as sess:
 
                 with open('logs.txt', 'a') as f :
                     f.write(line)
-                    '''
+
+        saver.save(sess=sess, save_path='./model/dense.ckpt')
