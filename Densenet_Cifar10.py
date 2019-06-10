@@ -322,7 +322,6 @@ with tf.Session() as sess:
             for batch in range(len(batch_y)):
                 for y in range(len(batch_y[batch])):
                     for x in range(len(batch_y[batch][y])):
-                        print(batch_y[batch][y][x][0])
                         if batch_y[batch][y][x][0] > 20.0:
                             batch_y[batch][y][x][0] = 0.0
 
