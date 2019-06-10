@@ -31,7 +31,7 @@ iteration = 376
 
 test_iteration = 10
 
-total_epochs = 5
+total_epochs = 50
 
 def read_dataset(hf5):
     import numpy as np
