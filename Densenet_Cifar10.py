@@ -374,12 +374,14 @@ with tf.Session() as sess:
             #image_batch, mask_batch, _ = sess.run([image_ph, mask_ph, reset_iou])
             image_batch = x_train[train_step :train_step + batch_size]
             mask_batch = y_train[train_step :train_step + batch_size]
-            mask_batch = tf.cast(mask_batch, tf.int32)
+
             for y in range(len(mask_batch[0])):
                 for x in range(len(mask_batch[0][y])):
                     print(mask_batch[0][y][x][0])
                     if mask_batch[0][y][x][0] > 20:
                         mask_batch[0][y][x][0] = 0
+                        
+            mask_batch = tf.cast(mask_batch, tf.int32)
             feed_dict = {image_ph: image_batch,
                         mask_ph: mask_batch,
                         training: True}
