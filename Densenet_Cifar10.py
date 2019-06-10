@@ -382,7 +382,8 @@ with tf.Session() as sess:
             feed_dict = {image_ph: image_batch,
                         mask_ph: mask_batch,
                         training: True}
-
+            print(mask_batch[0])
+            break
             cost, _, _ = sess.run([loss, opt, iou_update], feed_dict=feed_dict)
             train_iou = sess.run(iou, feed_dict=feed_dict)
 
