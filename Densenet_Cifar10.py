@@ -12,9 +12,9 @@ from tensorflow.contrib.framework import arg_scope
 # Hyperparameter
 growth_k = 12
 nb_block = 2 # how many (dense block + Transition Layer) ?
-init_learning_rate = 1e-4
+init_learning_rate = 0.001
 epsilon = 1e-4 # AdamOptimizer epsilon
-dropout_rate = 0.2
+dropout_rate = 0.5
 num_classes = 21
 
 # Momentum Optimizer will use
@@ -22,16 +22,16 @@ nesterov_momentum = 0.9
 weight_decay = 1e-4
 
 # Label & batch_size
-batch_size = 32
+batch_size = 10
 
 data_legth = 12031
 
 # batch_size * iteration = data_set_number
-iteration = 376
+iteration = 1204
 
 test_iteration = 10
 
-total_epochs = 50
+total_epochs = 625
 
 def read_dataset(hf5):
     import numpy as np
@@ -342,8 +342,6 @@ with tf.Session() as sess:
 
                 train_loss /= iteration # average loss
                 train_acc /= iteration # average accuracy
-
-
 
                 train_summary = tf.Summary(value=[tf.Summary.Value(tag='train_loss', simple_value=train_loss),
                                                   tf.Summary.Value(tag='train_accuracy', simple_value=train_acc)])
