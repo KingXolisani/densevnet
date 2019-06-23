@@ -10,7 +10,7 @@ from tensorflow.contrib.layers import xavier_initializer
 from tensorflow.contrib.framework import arg_scope
 
 # Hyperparameter
-growth_k = 10
+growth_k = 12
 nb_block = 2 # how many (dense block + Transition Layer) ?
 init_learning_rate = 0.001
 epsilon = 1e-4 # AdamOptimizer epsilon
@@ -155,8 +155,7 @@ def calculate_iou(mask, prediction, num_classes):
 """ Model class """
 
 class DenseNet():
-    def __init__(self, x, nb_blocks, filters, training):
-        self.nb_blocks = nb_blocks
+    def __init__(self, x, filters, training):
         self.filters = filters
         self.training = training
         self.model = self.Dense_net(x)
@@ -280,7 +279,7 @@ training = tf.placeholder(tf.bool, shape=[])
 learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
 # Init model and loss function
-logits = DenseNet(x=image_ph, nb_blocks=nb_block, filters=growth_k, training=training).model
+logits = DenseNet(x=image_ph, filters=growth_k, training=training).model
 loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
 
 with tf.variable_scope("mean_iou_train"):
