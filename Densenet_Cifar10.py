@@ -10,7 +10,7 @@ from tensorflow.contrib.layers import xavier_initializer
 from tensorflow.contrib.framework import arg_scope
 
 # Hyperparameter
-growth_k = 12
+growth_k = 10
 nb_block = 2 # how many (dense block + Transition Layer) ?
 init_learning_rate = 0.001
 epsilon = 1e-4 # AdamOptimizer epsilon
