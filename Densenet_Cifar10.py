@@ -241,6 +241,7 @@ class DenseNet():
 """ Building tensorflow graphs """
 # Loading dataset
 x_train, y_train  = read_dataset(dataset)
+x_train = x_train/255 # Normalise data
 
 # Creating data placeholders
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
@@ -296,6 +297,7 @@ with tf.Session() as sess:
                 batch_x = x_train[pre_index:]
                 batch_y = y_train[pre_index:]
 
+            # preprocess: ensure each entry in label batch is in [0, num_classes)
             for batch in range(len(batch_y)):
                 for y in range(len(batch_y[batch])):
                     for x in range(len(batch_y[batch][y])):
