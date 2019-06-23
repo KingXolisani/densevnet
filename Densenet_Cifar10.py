@@ -1,37 +1,27 @@
-import tensorflow as tf
-import numpy as np
-from PIL import Image
-
-#import utility
 import os
-from tflearn.layers.conv import global_avg_pool
+import numpy as np
+import tensorflow as tf
 from tensorflow.contrib.layers import batch_norm, flatten
 from tensorflow.contrib.layers import xavier_initializer
 from tensorflow.contrib.framework import arg_scope
+from tflearn.layers.conv import global_avg_pool
+from PIL import Image
 
 # Hyperparameter
-growth_k = 12
-nb_block = 2 # how many (dense block + Transition Layer) ?
+dataset = 'VOC_dataset.h5'
+data_size = 12031
+num_classes = 21
 init_learning_rate = 0.001
 epsilon = 1e-4 # AdamOptimizer epsilon
 dropout_rate = 0.5
-num_classes = 21
+batch_size = 10
+iteration = 1204 # batch_size * iteration = data_set_number
+test_iteration = 10
+total_epochs = 625
 
 # Momentum Optimizer will use
 nesterov_momentum = 0.9
 weight_decay = 1e-4
-
-# Label & batch_size
-batch_size = 10
-
-data_legth = 12031
-
-# batch_size * iteration = data_set_number
-iteration = 1204
-
-test_iteration = 10
-
-total_epochs = 625
 
 """ utilities/ helper fuctions """
 
@@ -119,15 +109,6 @@ def Evaluate(sess):
 """ Loss fuction definitions """
 
 def xentropy_loss(logits, labels, num_classes):
-    """
-    Calculates the cross-entropy loss over each pixel in the ground truth
-    and the prediction.
-    Args:
-        logits: Tensor, raw unscaled predictions from the network.
-        labels: Tensor, the ground truth segmentation mask.
-    Returns:
-        loss: The cross entropy loss over each image in the batch.
-    """
     labels = tf.cast(labels, tf.int32)
     logits = tf.reshape(logits, [tf.shape(logits)[0], -1, num_classes])
     labels = tf.reshape(labels, [tf.shape(labels)[0], -1])
@@ -137,15 +118,6 @@ def xentropy_loss(logits, labels, num_classes):
     return loss
 
 def calculate_iou(mask, prediction, num_classes):
-    """
-    Calculates the mean intersection over union (mean pixel accuracy)
-    Args:
-        mask: Tensor, The ground truth input segmentation mask.
-        prediction: Tensor, the raw unscaled prediction from the network.
-    Returns:
-        iou: Tensor, average iou over the batch.
-        update_op: Tensor op, update operation for the iou metric.
-    """
     mask = tf.reshape(tf.one_hot(tf.squeeze(mask), depth = num_classes), [tf.shape(mask)[0], -1, num_classes])
     prediction = tf.reshape(prediction, shape=[tf.shape(prediction)[0], -1, num_classes])
     iou, update_op = tf.metrics.mean_iou(tf.argmax(prediction, 2), tf.argmax(mask, 2), num_classes)
@@ -155,8 +127,7 @@ def calculate_iou(mask, prediction, num_classes):
 """ Model class """
 
 class DenseNet():
-    def __init__(self, x, filters, training):
-        self.filters = filters
+    def __init__(self, x, training):
         self.training = training
         self.model = self.Dense_net(x)
 
@@ -187,7 +158,7 @@ class DenseNet():
 
             return x
 
-    def upsample_layer(self, bottom,n_channels, name, upscale_factor):
+    def upsample_layer(self, bottom, n_channels, name, upscale_factor):
         kernel_size = 2*upscale_factor - upscale_factor%2
         stride = upscale_factor
         strides = [1, stride, stride, 1]
@@ -222,7 +193,7 @@ class DenseNet():
 
         return deconv
 
-    def dense_block(self, input_x, filters, nb_layers, layer_name):
+    def dense_block(self, input_x, filters, layer_name):
         with tf.name_scope(layer_name):
             layers_concat = list()
 
@@ -269,30 +240,27 @@ class DenseNet():
 
 """ Building tensorflow graphs """
 # Loading dataset
-x_train, y_train  = read_dataset('VOC_dataset.h5')
+x_train, y_train  = read_dataset(dataset)
 
 # Creating data placeholders
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
 mask_ph = tf.placeholder(tf.int32, shape=[None, 72, 72, 1])
 training = tf.placeholder(tf.bool, shape=[])
 
-learning_rate = tf.placeholder(tf.float32, name='learning_rate')
-
 # Init model and loss function
-logits = DenseNet(x=image_ph, filters=growth_k, training=training).model
+logits = DenseNet(x=image_ph, training=training).model
 loss = tf.reduce_mean(xentropy_loss(logits, mask_ph, num_classes))
 
 with tf.variable_scope("mean_iou_train"):
     iou, iou_update = calculate_iou(mask_ph, logits, num_classes)
 
-optimizer = tf.train.AdamOptimizer(init_learning_rate)
+# Init Optimizer function
+optimizer = tf.train.AdamOptimizer(init_learning_rate, epsilon=epsilon)
 update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-
 with tf.control_dependencies(update_ops):
     opt = optimizer.minimize(loss)
 
-running_vars = tf.get_collection(
-    tf.GraphKeys.LOCAL_VARIABLES, scope="mean_iou_train")
+running_vars = tf.get_collection(tf.GraphKeys.LOCAL_VARIABLES, scope="mean_iou_train")
 
 reset_iou = tf.variables_initializer(var_list=running_vars)
 
@@ -321,7 +289,7 @@ with tf.Session() as sess:
         train_loss = 0.0
 
         for step in range(1, iteration + 1):
-            if pre_index+batch_size < data_legth:
+            if pre_index+batch_size < data_size:
                 batch_x = x_train[pre_index:pre_index+ batch_size]
                 batch_y = y_train[pre_index:pre_index+ batch_size]
             else:
