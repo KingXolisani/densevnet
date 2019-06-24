@@ -33,9 +33,8 @@ def data_augmenation(imgs):
     data_out.append(data_aug.scale(imgs, [0.6, 0.8, 0.9]))
     data_out.append(data_aug.rotate(imgs, -5, 5, 3))
     data_out.append(data_aug.add_noise(X_imgs))
-    
-    return data_out
 
+    return data_out
 
 def read_dataset(hf5):
     import numpy as np
@@ -310,16 +309,19 @@ with tf.Session() as sess:
                 batch_x = x_train[pre_index:]
                 batch_y = y_train[pre_index:]
 
+            batch_x_aug = data_augmenation (batch_x)
+            batch_y_aug = data_augmenation (batch_y)
+
             # preprocess: ensure each entry in label batch is in [0, num_classes)
-            for batch in range(len(batch_y)):
-                for y in range(len(batch_y[batch])):
-                    for x in range(len(batch_y[batch][y])):
-                        if batch_y[batch][y][x][0] > 20.0:
-                            batch_y[batch][y][x][0] = 0.0
+            for batch in range(len(batch_y_aug)):
+                for y in range(len(batch_y_aug[batch])):
+                    for x in range(len(batch_y_aug[batch][y])):
+                        if batch_y_aug[batch][y][x][0] > 20.0:
+                            batch_y_aug[batch][y][x][0] = 0.0
 
             train_feed_dict = {
-                image_ph: batch_x,
-                mask_ph: batch_y,
+                image_ph: batch_x_aug,
+                mask_ph: batch_y_aug,
                 training : True
             }
 
