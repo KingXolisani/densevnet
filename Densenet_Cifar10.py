@@ -8,6 +8,8 @@ from tflearn.layers.conv import global_avg_pool
 from PIL import Image
 import matplotlib.image as mpimg
 
+import data_aug
+
 # Hyperparameter
 dataset = 'VOC_dataset.h5'
 data_size = 12031
@@ -25,6 +27,15 @@ nesterov_momentum = 0.9
 weight_decay = 1e-4
 
 """ utilities/ helper fuctions """
+
+def data_augmenation(imgs):
+    data_out = []
+    data_out.append(data_aug.scale(imgs, [0.6, 0.8, 0.9]))
+    data_out.append(data_aug.rotate(imgs, -5, 5, 3))
+    data_out.append(data_aug.add_noise(X_imgs))
+    
+    return data_out
+
 
 def read_dataset(hf5):
     import numpy as np
