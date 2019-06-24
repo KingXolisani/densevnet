@@ -1,4 +1,4 @@
-def central_scale_images(X_imgs, scales):
+def scale (X_imgs, scales):
     IMAGE_SIZE = 144
     X_scale_data = []
 
@@ -40,7 +40,7 @@ def rotate_images(X_imgs, start_angle, end_angle, n_images):
     X_rotate = np.array(X_rotate, dtype = np.float32)
     return X_rotate
 
-def flip_images(X_imgs):
+def flip(X_imgs):
     X_flip = []
 
     for img in X_imgs:
@@ -52,7 +52,7 @@ def flip_images(X_imgs):
     X_flip = np.array(X_flip, dtype = np.float32)
     return X_flip
 
-def add_salt_pepper_noise(X_imgs):
+def add_noise(X_imgs):
     # Need to produce a copy as to not modify the original image
     X_imgs_copy = X_imgs.copy()
     row, col, _ = X_imgs_copy[0].shape
@@ -87,4 +87,3 @@ def add_gaussian_noise(X_imgs):
         gaussian_noise_imgs.append(gaussian_img)
     gaussian_noise_imgs = np.array(gaussian_noise_imgs, dtype = np.float32)
     return gaussian_noise_imgs
-    
