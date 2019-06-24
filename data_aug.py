@@ -22,7 +22,7 @@ def scale (X_imgs, scales):
 
     return X_scale_data
 
-def rotate_images(X_imgs, start_angle, end_angle, n_images):
+def rotate(X_imgs, start_angle, end_angle, n_images):
     from math import pi
 
     X_rotate = []
