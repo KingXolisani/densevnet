@@ -115,7 +115,6 @@ def add_gaussian_noise(X_imgs):
     gaussian_noise_imgs = np.array(gaussian_noise_imgs, dtype = np.float32)
     return gaussian_noise_imgs
 
-
 def read_dataset(hf5):
     import numpy as np
     import h5py
