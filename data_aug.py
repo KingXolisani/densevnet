@@ -67,11 +67,11 @@ def add_noise(X_imgs):
 
     for X_img in X_imgs_copy:
         # Add Salt noise
-        coords = [np.random.randint(0, i - 1, int(num_salt)) for i in X_img.shape]
+        coords = [np.random.randint(0, i , int(num_salt)) for i in X_img.shape]
         X_img[coords[0], coords[1], :] = 1
 
         # Add Pepper noise
-        coords = [np.random.randint(0, i - 1, int(num_pepper)) for i in X_img.shape]
+        coords = [np.random.randint(0, i , int(num_pepper)) for i in X_img.shape]
         X_img[coords[0], coords[1], :] = 0
     return X_imgs_copy
 
