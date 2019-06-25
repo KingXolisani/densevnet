@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf 
 
 def scale (X_imgs, scales):
     IMAGE_SIZE = 144
