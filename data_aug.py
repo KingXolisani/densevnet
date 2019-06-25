@@ -1,3 +1,5 @@
+import numpy as np
+
 def scale (X_imgs, scales):
     IMAGE_SIZE = 144
     X_scale_data = []
