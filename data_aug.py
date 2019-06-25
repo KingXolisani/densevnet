@@ -2,7 +2,8 @@ import numpy as np
 import tensorflow as tf
 
 def scale (X_imgs, scales):
-    IMAGE_SIZE = 144
+    IMAGE_SIZE = len(X_imgs[0])
+    print(IMAGE_SIZE)
     X_scale_data = []
 
     # Various settings needed for Tensorflow operation
