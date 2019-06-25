@@ -205,7 +205,7 @@ class DenseNet():
 
         return deconv
 
-    def dense_block(self, input_x, filters, layer_name):
+    def dense_block(self, input_x, filters, nb_layers, layer_name):
         with tf.name_scope(layer_name):
             layers_concat = list()
 
