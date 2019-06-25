@@ -1,5 +1,5 @@
 import numpy as np
-import tensorflow as tf 
+import tensorflow as tf
 
 def scale (X_imgs, scales):
     IMAGE_SIZE = 144
@@ -17,7 +17,7 @@ def scale (X_imgs, scales):
     for img_data in X_imgs:
         batch_img = np.expand_dims(img_data, axis = 0)
         tf_img = tf.image.crop_and_resize(batch_img, boxes, box_ind, crop_size)
-        scaled_imgs = sess.run(tf_img)
+        scaled_imgs = tf_img
         X_scale_data.extend(scaled_imgs)
 
     X_scale_data.extend(X_imgs)
