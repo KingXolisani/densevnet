@@ -304,10 +304,10 @@ with tf.Session() as sess:
         for step in range(1, iteration + 1):
             if pre_index+batch_size < data_size:
                 batch_x = x_train[pre_index:pre_index+ batch_size]
-                batch_y = y_train[pre_index:pre_index+ batch_size]
+                batch_y = y_train72[pre_index:pre_index+ batch_size]
             else:
                 batch_x = x_train[pre_index:]
-                batch_y = y_train[pre_index:]
+                batch_y = y_train72[pre_index:]
 
             batch_x_aug = data_augmenation (batch_x)
             batch_y_aug = data_augmenation (batch_y)
