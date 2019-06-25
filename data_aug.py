@@ -53,11 +53,14 @@ def flip(X_imgs):
         tf_img3 = tf.image.transpose_image(img)
         flipped_imgs = tf.Session().run([tf_img1, tf_img2, tf_img3])
         X_flip.extend(flipped_imgs)
+
+    X_flip.extend(X_imgs)
     X_flip = np.array(X_flip, dtype = np.float32)
     return X_flip
 
 def add_noise(X_imgs):
     # Need to produce a copy as to not modify the original image
+    X_Salt = []
     X_imgs_copy = X_imgs.copy()
     row, col, _ = X_imgs_copy[0].shape
     salt_vs_pepper = 0.2
@@ -73,7 +76,11 @@ def add_noise(X_imgs):
         # Add Pepper noise
         coords = [np.random.randint(0, i , int(num_pepper)) for i in X_img.shape]
         X_img[coords[0], coords[1], :] = 0
-    return X_imgs_copy
+        X_Salt.extend(X_img)
+
+    X_Salt.extend(X_imgs)
+    X_Salt = np.array(X_Salt, dtype = np.float32)
+    return X_imgs
 
 def add_gaussian_noise(X_imgs):
     import cv2
@@ -89,5 +96,7 @@ def add_gaussian_noise(X_imgs):
         gaussian = np.concatenate((gaussian, gaussian, gaussian), axis = 2)
         gaussian_img = cv2.addWeighted(X_img, 0.75, 0.25 * gaussian, 0.25, 0)
         gaussian_noise_imgs.append(gaussian_img)
+        
+    gaussian_noise_imgs.extend(X_imgs)
     gaussian_noise_imgs = np.array(gaussian_noise_imgs, dtype = np.float32)
     return gaussian_noise_imgs
