@@ -252,7 +252,7 @@ class DenseNet():
 
 """ Building tensorflow graphs """
 # Loading dataset
-x_train, y_train  = read_dataset(dataset)
+x_train, y_train72, y_train144  = read_dataset(dataset)
 x_train = x_train/255 # Normalise data
 
 # Creating data placeholders
