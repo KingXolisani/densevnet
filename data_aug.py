@@ -17,7 +17,7 @@ def scale (X_imgs, scales):
     for img_data in X_imgs:
         batch_img = np.expand_dims(img_data, axis = 0)
         tf_img = tf.image.crop_and_resize(batch_img, boxes, box_ind, crop_size)
-        scaled_imgs = tf.Session.run(tf_img)
+        scaled_imgs = tf.Session().run(tf_img)
         X_scale_data.extend(scaled_imgs)
 
     X_scale_data.extend(X_imgs)
@@ -36,7 +36,7 @@ def rotate(X_imgs, start_angle, end_angle, n_images):
         radian_value = degrees_angle * pi / 180  # Convert to radian
         radian_arr = [radian_value] * len(X_imgs)
         tf_img = tf.contrib.image.rotate(X_imgs, radian_arr)
-        rotated_imgs = tf.Session.run(tf_img)
+        rotated_imgs = tf.Session().run(tf_img)
         X_rotate.extend(rotated_imgs)
 
     X_rotate.extend(X_imgs)
@@ -50,7 +50,7 @@ def flip(X_imgs):
         tf_img1 = tf.image.flip_left_right(img)
         tf_img2 = tf.image.flip_up_down(img)
         tf_img3 = tf.image.transpose_image(img)
-        flipped_imgs = tf.Session.run([tf_img1, tf_img2, tf_img3])
+        flipped_imgs = tf.Session().run([tf_img1, tf_img2, tf_img3])
         X_flip.extend(flipped_imgs)
     X_flip = np.array(X_flip, dtype = np.float32)
     return X_flip
