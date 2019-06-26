@@ -141,7 +141,7 @@ def calculate_iou(mask, prediction, num_classes):
 class DenseNet():
     def __init__(self, x, training):
         self.training = training
-        self.model = self.Dense_net(x)
+        self.model = self.DenseVnet(x)
 
 
     def bottleneck_layer(self, x, filters, scope):
@@ -223,7 +223,7 @@ class DenseNet():
             return x
 
     """ Models """
-    def Dense_net(self, input_x):
+    def DenseVnet(self, input_x):
 
        Conv_Down0 = self.transition_layer(input_x, [5,5], scope='Conv_Down0')
 
