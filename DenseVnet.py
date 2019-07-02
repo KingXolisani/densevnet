@@ -11,7 +11,7 @@ import matplotlib.image as mpimg
 import data_aug
 
 # Hyperparameter
-dataset = 'VOC_dataset.h5'
+dataset = '../../VOC_dataset.h5'
 data_size = 12031
 num_classes = 21
 init_learning_rate = 0.001
