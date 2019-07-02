@@ -309,8 +309,8 @@ with tf.Session() as sess:
                 batch_x = x_train[pre_index:]
                 batch_y = y_train72[pre_index:]
 
-            batch_x_aug = data_augmenation (batch_x)
-            batch_y_aug = data_augmenation (batch_y)
+            batch_x_aug = batch_x #data_augmenation (batch_x)
+            batch_y_aug = batch_y #data_augmenation (batch_y)
 
             # preprocess: ensure each entry in label batch is in [0, num_classes)
             for batch in range(len(batch_y_aug)):
