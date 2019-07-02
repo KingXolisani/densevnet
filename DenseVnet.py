@@ -31,7 +31,7 @@ weight_decay = 1e-4
 def data_augmenation(imgs):
     data_out = []
     #data_out.extend(scale(imgs, [0.6, 0.8, 0.9]))
-    data_out.extend(rotate(imgs, -5, 5, 1))
+    data_out.extend(rotate(imgs, -5, 5, 2))
     #data_out.append(data_aug.add_noise(imgs))
 
     return data_out
