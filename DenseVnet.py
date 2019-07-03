@@ -8,7 +8,7 @@ from tflearn.layers.conv import global_avg_pool
 from PIL import Image
 import matplotlib.image as mpimg
 
-#import data_aug
+import data_aug
 
 # Hyperparameter
 dataset = '../../VOC_dataset.h5'
@@ -30,56 +30,11 @@ weight_decay = 1e-4
 
 def data_augmenation(imgs):
     data_out = []
-    #data_out.extend(scale(imgs, [0.6, 0.8, 0.9]))
-    data_out.extend(rotate(imgs, -5, 5, 2))
+    data_out.extend(data_aug.scale(imgs, [0.6, 0.8, 0.9]))
+    #data_out.extend(data_aug.rotate(imgs, -5, 5, 3))
     #data_out.append(data_aug.add_noise(imgs))
 
     return data_out
-
-def scale (X_imgs, scales):
-    IMAGE_SIZE = len(X_imgs[0])
-    print(IMAGE_SIZE)
-    X_scale_data = []
-
-    # Various settings needed for Tensorflow operation
-    boxes = np.zeros((len(scales), 4), dtype = np.float32)
-    for index, scale in enumerate(scales):
-        x1 = y1 = 0.5 - 0.5 * scale # To scale centrally
-        x2 = y2 = 0.5 + 0.5 * scale
-        boxes[index] = np.array([y1, x1, y2, x2], dtype = np.float32)
-    box_ind = np.zeros((len(scales)), dtype = np.int32)
-    crop_size = np.array([IMAGE_SIZE, IMAGE_SIZE], dtype = np.int32)
-
-    for img_data in X_imgs:
-        batch_img = np.expand_dims(img_data, axis = 0)
-        tf_img = tf.image.crop_and_resize(batch_img, boxes, box_ind, crop_size)
-        scaled_imgs = tf.Session().run(tf_img)
-        X_scale_data.extend(scaled_imgs)
-
-    X_scale_data.extend(X_imgs)
-    X_scale_data = np.array(X_scale_data, dtype = np.float32)
-
-    return X_scale_data
-
-def rotate(X_imgs, start_angle, end_angle, n_images):
-    from math import pi
-
-    X_rotate = []
-    iterate_at = (end_angle - start_angle) / (n_images - 1)
-
-    for index in range(n_images):
-        degrees_angle = start_angle + index * iterate_at
-        radian_value = degrees_angle * pi / 180  # Convert to radian
-        radian_arr = [radian_value] * len(X_imgs)
-        tf_img = tf.contrib.image.rotate(X_imgs, radian_arr)
-        rotated_imgs = tf.Session().run(tf_img)
-        X_rotate.extend(rotated_imgs)
-
-    X_rotate.extend(X_imgs)
-    X_rotate = np.array(X_rotate, dtype = np.float32)
-    return X_rotate
-
-
 
 def read_dataset(hf5):
     import numpy as np
