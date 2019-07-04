@@ -36,7 +36,7 @@ def data_augmenation(imgs):
 
     return data_out
 
-def scale (X_imgs, scales):
+def scale (X_imgs, scales, sess):
     IMAGE_SIZE = len(X_imgs[0])
     print(IMAGE_SIZE)
     X_scale_data = []
@@ -53,7 +53,7 @@ def scale (X_imgs, scales):
     for img_data in X_imgs:
         batch_img = np.expand_dims(img_data, axis = 0)
         tf_img = tf.image.crop_and_resize(batch_img, boxes, box_ind, crop_size)
-        scaled_imgs = tf_img #tf.Session().run(tf_img)
+        scaled_imgs = sess.run(tf_img)
         X_scale_data.extend(scaled_imgs)
 
     X_scale_data.extend(X_imgs)
