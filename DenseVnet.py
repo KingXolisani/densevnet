@@ -28,9 +28,9 @@ weight_decay = 1e-4
 
 """ utilities/ helper fuctions """
 
-def data_augmenation(imgs):
+def data_augmenation(imgs, sess):
     data_out = []
-    data_out.extend(scale(imgs, [0.6]))
+    data_out.extend(scale(imgs, [0.6], sess))
     #data_out.extend(data_aug.rotate(imgs, -5, 5, 3))
     #data_out.append(data_aug.add_noise(imgs))
 
@@ -280,8 +280,8 @@ class DenseNet():
 x_train_aug, y_train72_aug = [],[]
 x_train, y_train72, y_train144  = read_dataset(dataset)
 
-x_train_aug = data_augmenation (x_train[0:10])
-y_train72_aug = data_augmenation (y_train72[0:10])
+#x_train_aug = data_augmenation (x_train[0:10])
+#y_train72_aug = data_augmenation (y_train72[0:10])
 
 # Creating data placeholders
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
@@ -337,8 +337,8 @@ with tf.Session() as sess:
                 batch_x = x_train[pre_index:]
                 batch_y = y_train72[pre_index:]
 
-            batch_x_aug = batch_x #data_augmenation (batch_x)
-            batch_y_aug = batch_y #data_augmenation (batch_y)
+            batch_x_aug = data_augmenation (batch_x, sess)
+            batch_y_aug = data_augmenation (batch_y, sess)
 
             # preprocess: ensure each entry in label batch is in [0, num_classes)
             for batch in range(len(batch_y_aug)):
