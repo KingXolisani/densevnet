@@ -30,36 +30,11 @@ weight_decay = 1e-4
 
 def data_augmenation(imgs, sess):
     data_out = []
-    data_out.extend(scale(imgs, [0.6], sess))
-    #data_out.extend(data_aug.rotate(imgs, -5, 5, 3))
+    data_out.extend(data_aug.scale(imgs, [0.6, 0.8, 0.95], sess))
+    data_out.extend(data_aug.rotate(imgs, -5, 5, 3, sess))
     #data_out.append(data_aug.add_noise(imgs))
 
     return data_out
-
-def scale (X_imgs, scales, sess):
-    IMAGE_SIZE = len(X_imgs[0])
-    print(IMAGE_SIZE)
-    X_scale_data = []
-
-    # Various settings needed for Tensorflow operation
-    boxes = np.zeros((len(scales), 4), dtype = np.float32)
-    for index, scale in enumerate(scales):
-        x1 = y1 = 0.5 - 0.5 * scale # To scale centrally
-        x2 = y2 = 0.5 + 0.5 * scale
-        boxes[index] = np.array([y1, x1, y2, x2], dtype = np.float32)
-    box_ind = np.zeros((len(scales)), dtype = np.int32)
-    crop_size = np.array([IMAGE_SIZE, IMAGE_SIZE], dtype = np.int32)
-
-    for img_data in X_imgs:
-        batch_img = np.expand_dims(img_data, axis = 0)
-        tf_img = tf.image.crop_and_resize(batch_img, boxes, box_ind, crop_size)
-        scaled_imgs = sess.run(tf_img)
-        X_scale_data.extend(scaled_imgs)
-
-    X_scale_data.extend(X_imgs)
-    X_scale_data = np.array(X_scale_data, dtype = np.float32)
-
-    return X_scale_data
 
 def read_dataset(hf5):
     import numpy as np
@@ -280,8 +255,6 @@ class DenseNet():
 x_train_aug, y_train72_aug = [],[]
 x_train, y_train72, y_train144  = read_dataset(dataset)
 
-#x_train_aug = data_augmenation (x_train[0:10])
-#y_train72_aug = data_augmenation (y_train72[0:10])
 
 # Creating data placeholders
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])

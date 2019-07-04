@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-def scale (X_imgs, scales):
+def scale (X_imgs, scales, sess):
     IMAGE_SIZE = len(X_imgs[0])
     print(IMAGE_SIZE)
     X_scale_data = []
@@ -18,7 +18,7 @@ def scale (X_imgs, scales):
     for img_data in X_imgs:
         batch_img = np.expand_dims(img_data, axis = 0)
         tf_img = tf.image.crop_and_resize(batch_img, boxes, box_ind, crop_size)
-        scaled_imgs = tf.Session().run(tf_img)
+        scaled_imgs = sess.run(tf_img)
         X_scale_data.extend(scaled_imgs)
 
     X_scale_data.extend(X_imgs)
@@ -26,7 +26,7 @@ def scale (X_imgs, scales):
 
     return X_scale_data
 
-def rotate(X_imgs, start_angle, end_angle, n_images):
+def rotate(X_imgs, start_angle, end_angle, n_images, sess):
     from math import pi
 
     X_rotate = []
@@ -37,21 +37,21 @@ def rotate(X_imgs, start_angle, end_angle, n_images):
         radian_value = degrees_angle * pi / 180  # Convert to radian
         radian_arr = [radian_value] * len(X_imgs)
         tf_img = tf.contrib.image.rotate(X_imgs, radian_arr)
-        rotated_imgs = tf.Session().run(tf_img)
+        rotated_imgs = sess.run(tf_img)
         X_rotate.extend(rotated_imgs)
 
     X_rotate.extend(X_imgs)
     X_rotate = np.array(X_rotate, dtype = np.float32)
     return X_rotate
 
-def flip(X_imgs):
+def flip(X_imgs, sess):
     X_flip = []
 
     for img in X_imgs:
         tf_img1 = tf.image.flip_left_right(img)
         tf_img2 = tf.image.flip_up_down(img)
         tf_img3 = tf.image.transpose_image(img)
-        flipped_imgs = tf.Session().run([tf_img1, tf_img2, tf_img3])
+        flipped_imgs = sess.run([tf_img1, tf_img2, tf_img3])
         X_flip.extend(flipped_imgs)
 
     X_flip.extend(X_imgs)
@@ -96,7 +96,7 @@ def add_gaussian_noise(X_imgs):
         gaussian = np.concatenate((gaussian, gaussian, gaussian), axis = 2)
         gaussian_img = cv2.addWeighted(X_img, 0.75, 0.25 * gaussian, 0.25, 0)
         gaussian_noise_imgs.append(gaussian_img)
-        
+
     gaussian_noise_imgs.extend(X_imgs)
     gaussian_noise_imgs = np.array(gaussian_noise_imgs, dtype = np.float32)
     return gaussian_noise_imgs
