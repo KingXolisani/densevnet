@@ -255,8 +255,8 @@ class DenseNet():
 x_train_aug, y_train72_aug = [],[]
 x_train, y_train72, y_train144  = read_dataset(dataset)
 
-x_train_aug = data_augmenation (x_train)
-y_train72_aug = data_augmenation (y_train72)
+x_train_aug = data_augmenation (x_train[0:10])
+y_train72_aug = data_augmenation (y_train72[0:10])
 
 # Creating data placeholders
 image_ph = tf.placeholder(tf.float32, shape=[None, 144, 144, 3])
