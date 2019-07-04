@@ -3,7 +3,7 @@ import tensorflow as tf
 
 def scale (X_imgs, scales, sess):
     IMAGE_SIZE = len(X_imgs[0])
-    print(IMAGE_SIZE)
+    #print(IMAGE_SIZE)
     X_scale_data = []
 
     # Various settings needed for Tensorflow operation

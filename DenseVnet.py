@@ -333,6 +333,7 @@ with tf.Session() as sess:
             train_acc += train_iou
             pre_index += batch_size
 
+            print(train_acc)
             if step == iteration :
 
                 train_loss /= iteration # average loss
