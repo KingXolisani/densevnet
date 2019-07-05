@@ -334,7 +334,7 @@ with tf.Session() as sess:
             pre_index += batch_size
 
             print(train_iou)
-            print(pre_index)
+            print(step)
 
             if step == iteration :
 
